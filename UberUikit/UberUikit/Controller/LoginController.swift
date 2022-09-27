@@ -21,44 +21,21 @@ class LoginController: UIViewController {
     }()
     
     //Container view that will contain the UiImage and divider, usernameTextField (which will be added seperately)
-    private lazy var emailContainerView: UIView = { //lazy var gets configured on an as needed basis
-        let view = UIView()
-        view.backgroundColor = .red
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "ic_mail_outline_white_2x")
-        imageView.alpha = 0.87
-        view.addSubview(imageView)
-        imageView.centerY(inView: view) //horizontally centering it in the view
-        imageView.anchor(left: view.leftAnchor, paddingLeft: 8, width: 24, height: 24)
-        view.addSubview(emailTextField)
-        emailTextField.anchor(left: imageView.rightAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingLeft: 8, paddingBottom: 8)
-        return view
+    private lazy var emailContainerView: UIView = { //lazy var gets configured on an as needed basis, so its configured when its called upon
+        return UIView().inputContainerView(imageName: "ic_mail_outline_white_2x", textfield: emailTextField)
+        
     }()
     //this email text field will be added to our email ContainerView, we made our emailTextField outside the container view bc eventually we are going to need to grab the text from it later.
     private let emailTextField: UITextField = {
-        let tf = UITextField()
-        tf.borderStyle = .none
-        tf.font = UIFont.systemFont(ofSize: 16)
-        tf.textColor = .white
-        tf.keyboardAppearance = .dark //dark keybord to stick with the dark theme
-        //attributed placeholder with a custom color
-        tf.attributedPlaceholder = NSAttributedString(string: "Email",attributes: [NSAttributedString.Key.foregroundColor : UIColor.lightGray])
-        return tf
+        return UITextField().textField(withPlaceholder: "Email", isSecureTextEntry: false)
     }()
     
-    private let divider: UIView = {
-        let divider = UIView()
-        divider.translatesAutoresizingMaskIntoConstraints = false
-        divider.backgroundColor = .white
-        return divider
+    private lazy var passwordContainerView: UIView = {
+        return UIView().inputContainerView(imageName: "ic_lock_outline_white_2x", textfield: passwordTextField)
     }()
     
-    let passwordTextField: UITextField = {
-        let textField = UITextField(frame: CGRect.zero)
-        textField.placeholder = "Password..."
-        textField.isSecureTextEntry = true
-        textField.translatesAutoresizingMaskIntoConstraints = true
-        return textField
+    private let passwordTextField: UITextField = {
+        return UITextField().textField(withPlaceholder: "Password", isSecureTextEntry: true)
     }()
     
     let loginButton = UIButton()
@@ -76,13 +53,15 @@ class LoginController: UIViewController {
     private func constraints(){
         view.addSubview(titleLabel)
         view.addSubview(emailContainerView)
+        view.addSubview(passwordContainerView)
         emailContainerView.addSubview(emailTextField)
-        emailContainerView.addSubview(divider)
+        passwordContainerView.addSubview(passwordTextField)
         
         //MARK: - Constraints
         titleLabel.anchor(top: view.safeAreaLayoutGuide.topAnchor)
         titleLabel.centerX(inView: view)
         emailContainerView.anchor(top: titleLabel.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 40, paddingLeft: 16, paddingRight: 16, height: 50)
+        passwordContainerView.anchor(top: emailContainerView.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 16, paddingLeft: 16, paddingRight: 16, height: 50)
     }
 
 
