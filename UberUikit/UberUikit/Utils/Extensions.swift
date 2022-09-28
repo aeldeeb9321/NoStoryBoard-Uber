@@ -7,21 +7,43 @@
 
 import UIKit
 
+extension UIColor{
+    //values passed in will now be automatically divided by 255
+    static func rgb(red: CGFloat, green: CGFloat, blue: CGFloat) -> UIColor{
+        return UIColor.init(red: red/255, green: green/255, blue: blue/255, alpha: 1.0)
+    }
+    
+    //custom colors
+    static let backgroundColor = UIColor.rgb(red: 25, green: 25, blue: 25)
+    static let mainBlueTint = UIColor.rgb(red: 17, green: 154, blue: 237)
+}
+
+
 extension UIView{
     
-    func inputContainerView(imageName: String, textfield: UITextField) -> UIView{
+    func inputContainerView(imageName: String, textfield: UITextField? = nil, segmentedControl: UISegmentedControl? = nil) -> UIView{
         let view = UIView()
         
         let imageView = UIImageView()
         imageView.image = UIImage(named: imageName)
         imageView.alpha = 0.87
         view.addSubview(imageView)
-        imageView.centerY(inView: view) //horizontally centering it in the view
-        imageView.anchor(left: view.leftAnchor, paddingLeft: 8, width: 24, height: 24)
         
-        view.addSubview(textfield)
-        textfield.centerY(inView: view)
-        textfield.anchor(left: imageView.rightAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingLeft: 8, paddingBottom: 8)
+        //imageview constraints will be different if the textField exists vs if the segmented control exits
+        if let textfield = textfield{
+            imageView.centerY(inView: view) //horizontally centering it in the view
+            imageView.anchor(left: view.leftAnchor, paddingLeft: 8, width: 24, height: 24)
+            view.addSubview(textfield)
+            textfield.centerY(inView: view)
+            textfield.anchor(left: imageView.rightAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingLeft: 8, paddingBottom: 8)
+        }
+        
+        if let sc = segmentedControl{
+            imageView.anchor(top: view.topAnchor, left: view.leftAnchor, paddingTop: 8, paddingLeft: 8, width: 24, height: 24)
+            view.addSubview(sc)
+            sc.anchor(left: view.leftAnchor, right: view.rightAnchor, paddingLeft: 8, paddingRight: 8)
+            sc.centerY(inView: view)
+        }
         
         let divider = UIView()
         divider.backgroundColor = .lightGray

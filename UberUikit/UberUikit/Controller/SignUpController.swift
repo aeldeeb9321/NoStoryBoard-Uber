@@ -1,14 +1,13 @@
 //
-//  LoginController.swift
+//  SignUpController.swift
 //  UberUikit
 //
-//  Created by Ali Eldeeb on 9/25/22.
+//  Created by Ali Eldeeb on 9/27/22.
 //
 
 import UIKit
 
-class LoginController: UIViewController {
-    
+class SignUpController: UIViewController{
     //MARK: - Properties
     
     private let titleLabel: UILabel = { //in this closure we create the label, give its attributes, then return it.
@@ -33,6 +32,19 @@ class LoginController: UIViewController {
         return UITextField().textField(withPlaceholder: "Email", isSecureTextEntry: false)
     }()
     
+    //Container view that will contain the UiImage and divider, usernameTextField (which will be added seperately)
+    private lazy var fullNameContainerView: UIView = { //lazy var gets configured on an as needed basis, so its configured when its called upon
+        let view = UIView().inputContainerView(imageName: "ic_person_outline_white_2x", textfield: fullNameTextField)
+        //added a height constraint for our stack
+        view.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        return view
+        
+    }()
+    //this email text field will be added to our email ContainerView, we made our emailTextField outside the container view bc eventually we are going to need to grab the text from it later.
+    private let fullNameTextField: UITextField = {
+        return UITextField().textField(withPlaceholder: "Full Name", isSecureTextEntry: false)
+    }()
+    
     private lazy var passwordContainerView: UIView = {
         let view = UIView().inputContainerView(imageName: "ic_lock_outline_white_2x", textfield: passwordTextField)
         view.heightAnchor.constraint(equalToConstant: 50).isActive = true
@@ -43,9 +55,23 @@ class LoginController: UIViewController {
         return UITextField().textField(withPlaceholder: "Password", isSecureTextEntry: true)
     }()
     
-    private let loginButton: UIButton = {
+    private lazy var accountTypeContainerView: UIView = {
+        let view = UIView().inputContainerView(imageName: "ic_account_box_white_2x", segmentedControl: accTypeSC)
+        view.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        return view
+    }()
+    
+    private let accTypeSC: UISegmentedControl = {
+        let sc = UISegmentedControl(items: ["Rider", "Driver"])
+        sc.backgroundColor = .backgroundColor
+        sc.tintColor = UIColor(white: 1, alpha: 0.87) //when you have a dark mode an alpha of 0.87 is reccommended
+        sc.selectedSegmentIndex = 0 //makes the first segment selected right away
+        return sc
+    }()
+    
+    private let signUpButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Log In", for: .normal)
+        button.setTitle("Sign Up", for: .normal)
         //this is to make the button Title Color change depending on whether the textfields are filled
         button.setTitleColor(UIColor(white: 1, alpha: 0.5), for: .normal)
         button.backgroundColor = .mainBlueTint
@@ -55,47 +81,31 @@ class LoginController: UIViewController {
         return button
     }()
     
-    private let dontHaveAccoutButton: UIButton = {
-        let button = UIButton(type: .system)
-        let attributedTitle = NSMutableAttributedString(string: "Don't have an account? ",attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: UIColor.lightGray])
-        attributedTitle.append(NSAttributedString(string: "Sign Up", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16),NSAttributedString.Key.foregroundColor: UIColor.rgb(red: 17, green: 154, blue: 237)]))
-        button.addTarget(self, action: #selector(handleShowSignUp), for: .touchUpInside)
-        button.setAttributedTitle(attributedTitle, for: .normal)
-        return button
-    }()
+    //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .backgroundColor
-        constraints()
-        navigationController?.navigationBar.barStyle = .black //gives a white tint to time and battery on top
+        updateUI()
     }
     
-    override var preferredStatusBarStyle: UIStatusBarStyle{
-        return .lightContent //light status bar on top for dark backgrounds
-    }
-    
-    private func constraints(){
-        let stack = UIStackView(arrangedSubviews: [emailContainerView, passwordContainerView, loginButton])
+    //MARK: - Helper Functions
+    private func updateUI(){
+        
+        let stack = UIStackView(arrangedSubviews: [emailContainerView, fullNameContainerView, passwordContainerView, accountTypeContainerView, signUpButton])
         //.axis property determines the orientation of the arranged views.
         stack.axis = .vertical
         stack.distribution = .fillEqually
         stack.spacing = 24
-        
-        view.addSubview(titleLabel)
+
         view.addSubview(stack)
-        view.addSubview(dontHaveAccoutButton)
+        view.addSubview(titleLabel)
         
         //MARK: - Constraints
         titleLabel.anchor(top: view.safeAreaLayoutGuide.topAnchor)
         titleLabel.centerX(inView: view)
         stack.anchor(top: titleLabel.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 40, paddingLeft: 16, paddingRight: 16)
-        dontHaveAccoutButton.anchor(bottom: view.safeAreaLayoutGuide.bottomAnchor, height: 32)
-        dontHaveAccoutButton.centerX(inView: view)
-    }
-
-    @objc func handleShowSignUp(sender: UIButton){
-        let controller = SignUpController()
-        navigationController?.pushViewController(controller, animated: true)
+    
     }
     
+    //MARK: - Selectors
 }
