@@ -60,7 +60,7 @@ class SignUpController: UIViewController{
         view.heightAnchor.constraint(equalToConstant: 80).isActive = true
         return view
     }()
-    
+      
     private let accTypeSC: UISegmentedControl = {
         let sc = UISegmentedControl(items: ["Rider", "Driver"])
         sc.backgroundColor = .backgroundColor
