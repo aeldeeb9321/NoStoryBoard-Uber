@@ -22,7 +22,10 @@ class LoginController: UIViewController {
     
     //Container view that will contain the UiImage and divider, usernameTextField (which will be added seperately)
     private lazy var emailContainerView: UIView = { //lazy var gets configured on an as needed basis, so its configured when its called upon
-        return UIView().inputContainerView(imageName: "ic_mail_outline_white_2x", textfield: emailTextField)
+        let view = UIView().inputContainerView(imageName: "ic_mail_outline_white_2x", textfield: emailTextField)
+        //added a height constraint for our stack
+        view.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        return view
         
     }()
     //this email text field will be added to our email ContainerView, we made our emailTextField outside the container view bc eventually we are going to need to grab the text from it later.
@@ -31,7 +34,9 @@ class LoginController: UIViewController {
     }()
     
     private lazy var passwordContainerView: UIView = {
-        return UIView().inputContainerView(imageName: "ic_lock_outline_white_2x", textfield: passwordTextField)
+        let view = UIView().inputContainerView(imageName: "ic_lock_outline_white_2x", textfield: passwordTextField)
+        view.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        return view
     }()
     
     private let passwordTextField: UITextField = {
@@ -51,17 +56,19 @@ class LoginController: UIViewController {
     }
     
     private func constraints(){
+        let stack = UIStackView(arrangedSubviews: [emailContainerView, passwordContainerView])
+        //.axis property determines the orientation of the arranged views.
+        stack.axis = .vertical
+        stack.distribution = .fillEqually
+        stack.spacing = 16
+        
+        view.addSubview(stack)
         view.addSubview(titleLabel)
-        view.addSubview(emailContainerView)
-        view.addSubview(passwordContainerView)
-        emailContainerView.addSubview(emailTextField)
-        passwordContainerView.addSubview(passwordTextField)
         
         //MARK: - Constraints
         titleLabel.anchor(top: view.safeAreaLayoutGuide.topAnchor)
         titleLabel.centerX(inView: view)
-        emailContainerView.anchor(top: titleLabel.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 40, paddingLeft: 16, paddingRight: 16, height: 50)
-        passwordContainerView.anchor(top: emailContainerView.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 16, paddingLeft: 16, paddingRight: 16, height: 50)
+        stack.anchor(top: titleLabel.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 40, paddingLeft: 16, paddingRight: 16)
     }
 
 
