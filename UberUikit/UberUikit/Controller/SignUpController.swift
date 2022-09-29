@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import Firebase
 
 class SignUpController: UIViewController{
     //MARK: - Properties
@@ -112,18 +113,26 @@ class SignUpController: UIViewController{
         stack.anchor(top: titleLabel.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 40, paddingLeft: 16, paddingRight: 16)
         alreadyHaveAccoutButton.anchor(bottom: view.safeAreaLayoutGuide.bottomAnchor, height: 32)
         alreadyHaveAccoutButton.centerX(inView: view)
-    
+        
     }
     
     //MARK: - Selectors
     
     @objc func handleUserSignUp(sender: UIButton){
-        guard let emailText = emailTextField.text, let passwordText = passwordTextField.text else{return}
-        Auth.auth().createUser(withEmail: emailText, password: passwordText) { authResult, error in
+        guard let email = emailTextField.text, let password = passwordTextField.text, let fullname = fullNameTextField.text else{return}
+        let accountTypeIndex = accTypeSC.selectedSegmentIndex
+        Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
             guard error == nil else{ return}
-            print(emailText)
-            print(passwordText)
-          
+            
+            //grabbing user id which will help us identify the user
+            guard let uid = authResult?.user.uid else{return}
+            //creating a dictionary of data that we will upload to firebase real time database
+            let values = ["email": email, "fullname": fullname, "accountType": accountTypeIndex]
+            
+            //Creating the users node, then add the dictionary of data about our user to the database
+//            Database.database().reference().child("users").child(uid).updateChildValues(values) { error, ref in
+//                print("Successfully registered user and saved data...")
+//            }
         }
     }
     
