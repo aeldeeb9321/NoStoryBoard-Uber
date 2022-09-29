@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class LoginController: UIViewController {
     
@@ -29,8 +30,11 @@ class LoginController: UIViewController {
         
     }()
     //this email text field will be added to our email ContainerView, we made our emailTextField outside the container view bc eventually we are going to need to grab the text from it later.
-    private let emailTextField: UITextField = {
-        return UITextField().textField(withPlaceholder: "Email", isSecureTextEntry: false)
+    private lazy var emailTextField: UITextField = {
+        var tf = UITextField().textField(withPlaceholder: "Email", isSecureTextEntry: false)
+        tf.tag = 1
+        tf.delegate = self
+        return tf
     }()
     
     private lazy var passwordContainerView: UIView = {
@@ -39,23 +43,22 @@ class LoginController: UIViewController {
         return view
     }()
     
-    private let passwordTextField: UITextField = {
-        return UITextField().textField(withPlaceholder: "Password", isSecureTextEntry: true)
+    private lazy var passwordTextField: UITextField = {
+        let tf =  UITextField().textField(withPlaceholder: "Password", isSecureTextEntry: true)
+        tf.tag = 2
+        tf.delegate = self
+        return tf
     }()
     
-    private let loginButton: UIButton = {
-        let button = UIButton(type: .system)
+    private lazy var loginButton: AuthButton = {
+        let button = AuthButton(type: .system)
         button.setTitle("Log In", for: .normal)
-        //this is to make the button Title Color change depending on whether the textfields are filled
-        button.setTitleColor(UIColor(white: 1, alpha: 0.5), for: .normal)
-        button.backgroundColor = .mainBlueTint
-        button.layer.cornerRadius = 5
-        button.heightAnchor.constraint(equalToConstant: 50).isActive = true
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.addTarget(self, action: #selector(handleUserLogin), for: .touchUpInside)
         return button
     }()
     
-    private let dontHaveAccoutButton: UIButton = {
+    private lazy var dontHaveAccoutButton: UIButton = {
         let button = UIButton(type: .system)
         let attributedTitle = NSMutableAttributedString(string: "Don't have an account? ",attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: UIColor.lightGray])
         attributedTitle.append(NSAttributedString(string: "Sign Up", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16),NSAttributedString.Key.foregroundColor: UIColor.rgb(red: 17, green: 154, blue: 237)]))
@@ -66,15 +69,16 @@ class LoginController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .backgroundColor
-        constraints()
+        setupConstraints()
         navigationController?.navigationBar.barStyle = .black //gives a white tint to time and battery on top
+        
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle{
         return .lightContent //light status bar on top for dark backgrounds
     }
     
-    private func constraints(){
+    private func setupConstraints(){
         let stack = UIStackView(arrangedSubviews: [emailContainerView, passwordContainerView, loginButton])
         //.axis property determines the orientation of the arranged views.
         stack.axis = .vertical
@@ -93,9 +97,43 @@ class LoginController: UIViewController {
         dontHaveAccoutButton.centerX(inView: view)
     }
 
+    @objc func handleUserLogin(sender: UIButton){
+        if let email = emailTextField.text, let password = passwordTextField.text{
+            Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
+                guard let _ = self else { return }
+                guard error == nil else{return}
+                print("Successfully logged in")
+            }
+        }
+    }
+    
     @objc func handleShowSignUp(sender: UIButton){
         let controller = SignUpController()
         navigationController?.pushViewController(controller, animated: true)
     }
     
+}
+
+extension LoginController: UITextFieldDelegate{
+    //anytime the user types something, can be used when the user changes something in the textfield
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let currentText =  textField.text{
+            if let swiftRange = Range(range, in: currentText){
+                let textFieldText = currentText.replacingCharacters(in: swiftRange, with: string)
+                var otherTextFieldText: String
+                if textField.tag == 1{
+                    otherTextFieldText = passwordTextField.text ?? ""
+                }else{
+                    otherTextFieldText = emailTextField.text ?? ""
+                }
+                if !textFieldText.isEmpty && !otherTextFieldText.isEmpty{
+                    loginButton.setTitleColor(UIColor(white: 1, alpha: 1), for: .normal)
+                }else{
+                    loginButton.isEnabled = false
+                    loginButton.setTitleColor(UIColor(white: 1, alpha: 0.5), for: .normal)
+                }
+            }
+        }
+        return true
+    }
 }

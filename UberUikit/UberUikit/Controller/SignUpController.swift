@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class SignUpController: UIViewController{
     //MARK: - Properties
@@ -69,15 +70,20 @@ class SignUpController: UIViewController{
         return sc
     }()
     
-    private let signUpButton: UIButton = {
-        let button = UIButton(type: .system)
+    private lazy var signUpButton: AuthButton = {
+        let button = AuthButton(type: .system)
         button.setTitle("Sign Up", for: .normal)
-        //this is to make the button Title Color change depending on whether the textfields are filled
-        button.setTitleColor(UIColor(white: 1, alpha: 0.5), for: .normal)
-        button.backgroundColor = .mainBlueTint
-        button.layer.cornerRadius = 5
-        button.heightAnchor.constraint(equalToConstant: 50).isActive = true
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.addTarget(self, action: #selector(handleUserSignUp), for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var alreadyHaveAccoutButton: UIButton = {
+        let button = UIButton(type: .system)
+        let attributedTitle = NSMutableAttributedString(string: "Already have an account? ",attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: UIColor.lightGray])
+        attributedTitle.append(NSAttributedString(string: "Login", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16),NSAttributedString.Key.foregroundColor: UIColor.rgb(red: 17, green: 154, blue: 237)]))
+        button.addTarget(self, action: #selector(handleShowLogin), for: .touchUpInside)
+        button.setAttributedTitle(attributedTitle, for: .normal)
         return button
     }()
     
@@ -94,18 +100,35 @@ class SignUpController: UIViewController{
         let stack = UIStackView(arrangedSubviews: [emailContainerView, fullNameContainerView, passwordContainerView, accountTypeContainerView, signUpButton])
         //.axis property determines the orientation of the arranged views.
         stack.axis = .vertical
-        stack.distribution = .fillEqually
+        stack.distribution = .fillProportionally
         stack.spacing = 24
 
         view.addSubview(stack)
         view.addSubview(titleLabel)
-        
+        view.addSubview(alreadyHaveAccoutButton)
         //MARK: - Constraints
         titleLabel.anchor(top: view.safeAreaLayoutGuide.topAnchor)
         titleLabel.centerX(inView: view)
         stack.anchor(top: titleLabel.bottomAnchor, left: view.leftAnchor, right: view.rightAnchor, paddingTop: 40, paddingLeft: 16, paddingRight: 16)
+        alreadyHaveAccoutButton.anchor(bottom: view.safeAreaLayoutGuide.bottomAnchor, height: 32)
+        alreadyHaveAccoutButton.centerX(inView: view)
     
     }
     
     //MARK: - Selectors
+    
+    @objc func handleUserSignUp(sender: UIButton){
+        guard let emailText = emailTextField.text, let passwordText = passwordTextField.text else{return}
+        Auth.auth().createUser(withEmail: emailText, password: passwordText) { authResult, error in
+            guard error == nil else{ return}
+            print(emailText)
+            print(passwordText)
+          
+        }
+    }
+    
+    @objc func handleShowLogin(sender: UIButton){
+        
+        navigationController?.popViewController(animated: true)
+    }
 }
