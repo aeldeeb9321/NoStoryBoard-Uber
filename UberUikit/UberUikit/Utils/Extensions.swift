@@ -82,8 +82,18 @@ extension UIView{
     }
     
     //horizontally center any UIelement we want inside any view we want, if we dont give a constant value it is defaulted to 0
-    func centerY(inView view: UIView, constant: CGFloat = 0){
+    func centerY(inView view: UIView, constant: CGFloat = 0, leftAnchor: NSLayoutXAxisAnchor? = nil, paddingLeft: CGFloat = 0){
         centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: constant).isActive = true
+        //if we pass that left anchor in then we will anchor to the left side of any view we need it for
+        if let left = leftAnchor{
+            anchor(left: left, paddingLeft: paddingLeft)
+        }
+    }
+    
+    func setDimensions(height: CGFloat, width: CGFloat){
+        translatesAutoresizingMaskIntoConstraints = false
+        widthAnchor.constraint(equalToConstant: width).isActive = true
+        heightAnchor.constraint(equalToConstant: height).isActive = true
     }
 }
 
