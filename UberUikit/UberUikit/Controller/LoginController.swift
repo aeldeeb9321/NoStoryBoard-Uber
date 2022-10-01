@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 import FirebaseAuth
 
 class LoginController: UIViewController {
@@ -13,13 +14,11 @@ class LoginController: UIViewController {
     //MARK: - Properties
     
     private let titleLabel: UILabel = { //in this closure we create the label, give its attributes, then return it.
-        let label = UILabel()
-        label.text = "UBER"
-        label.font = UIFont(name: "Avenir-Light", size: 36)
-        label.textColor = UIColor(white: 1, alpha: 0.8)
-        label.translatesAutoresizingMaskIntoConstraints = false
+        let label = UILabel().uiLabel(withText: "UBER", font: UIFont(name: "Avenir-Light", size: 36), textColor: UIColor(white: 1, alpha: 0.8))
         return label
     }()
+    
+    
     
     //Container view that will contain the UiImage and divider, usernameTextField (which will be added seperately)
     private lazy var emailContainerView: UIView = { //lazy var gets configured on an as needed basis, so its configured when its called upon
@@ -102,9 +101,12 @@ class LoginController: UIViewController {
             Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
                 guard let _ = self else { return }
                 guard error == nil else{return}
-                print("Successfully logged in")
+                
             }
         }
+        guard let controller = UIApplication.shared.keyWindow?.rootViewController as? HomeController else{return }
+        controller.configureUI()
+        dismiss(animated: true)
     }
     
     @objc func handleShowSignUp(sender: UIButton){
@@ -127,6 +129,7 @@ extension LoginController: UITextFieldDelegate{
                     otherTextFieldText = emailTextField.text ?? ""
                 }
                 if !textFieldText.isEmpty && !otherTextFieldText.isEmpty{
+                    loginButton.isEnabled = true
                     loginButton.setTitleColor(UIColor(white: 1, alpha: 1), for: .normal)
                 }else{
                     loginButton.isEnabled = false
