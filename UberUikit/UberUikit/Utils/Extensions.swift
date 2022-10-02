@@ -21,6 +21,12 @@ extension UIColor{
 
 extension UIView{
     
+    func addShadow(){
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.55
+        layer.shadowOffset = CGSize(width: 0.5, height: 0.5)
+        layer.masksToBounds = false
+    }
     func inputContainerView(imageName: String, textfield: UITextField? = nil, segmentedControl: UISegmentedControl? = nil) -> UIView{
         let view = UIView()
         

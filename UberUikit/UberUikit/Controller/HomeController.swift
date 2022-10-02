@@ -15,6 +15,7 @@ class HomeController: UIViewController{
     private let mapView = MKMapView()
     private let locationManager = CLLocationManager()
     private let locationSearchView = LocationInputActivationView()
+    private let locationInputView = LocationInputView()
     //MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -57,6 +58,13 @@ class HomeController: UIViewController{
         locationSearchView.centerX(inView: view)
         locationSearchView.setDimensions(height: 50, width: view.frame.width - 64)
         locationSearchView.anchor(top: view.safeAreaLayoutGuide.topAnchor, paddingTop: 32)
+        locationSearchView.delegate = self
+        //makes the view invisible
+        locationSearchView.alpha = 0
+        //search bar will go from invisible to visible in an animation
+        UIView.animate(withDuration: 2) {
+            self.locationSearchView.alpha = 1
+        }
     }
     
     func configureMapView(){
@@ -65,6 +73,20 @@ class HomeController: UIViewController{
         mapView.showsUserLocation = true
         //The map will follow users location
         mapView.userTrackingMode = .follow
+    }
+    
+    func configureLocationInputView(){
+        view.addSubview(locationInputView)
+        locationInputView.anchor(top: view.topAnchor, left: view.leftAnchor, right: view.rightAnchor, height: 200)
+        //making it hidden
+        locationInputView.alpha = 0
+        locationInputView.delegate = self
+        UIView.animate(withDuration: 0.5) {
+            self.locationInputView.alpha = 1
+        } completion: { _ in
+            print("Debug: Present table view")
+        }
+
     }
 }
 
@@ -99,4 +121,31 @@ extension HomeController: CLLocationManagerDelegate{
             locationManager.requestAlwaysAuthorization()
         }
     }
+}
+
+//MARK: - LocationInputActivationViewDelegate
+extension HomeController: LocationInputActivationViewDelegate{
+    //this wont work until we set our delegate to self, if it isnt set it wont have a value and wont be able to call upon the required fuction
+    func presentLocationInputView() {
+        //Handle present location input view
+        locationSearchView.alpha = 0 //we want to hide the where to label after we click on it
+        configureLocationInputView()
+    }
+    
+}
+
+//MARK: - LocationInputViewDelegate
+extension HomeController: LocationInputViewDelegate{
+    func dismissLocationInputView() {
+        //chaining animations
+        UIView.animate(withDuration: 0.3) {
+            self.locationInputView.alpha = 0
+        } completion: { _ in
+            UIView.animate(withDuration: 0.3) {
+                self.locationSearchView.alpha = 1
+            }
+        }
+
+    }
+    
 }

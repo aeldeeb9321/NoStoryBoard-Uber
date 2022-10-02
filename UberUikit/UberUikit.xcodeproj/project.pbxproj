@@ -13,6 +13,7 @@
 		256C930528E52D81009A0F2B /* AuthButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 256C930428E52D81009A0F2B /* AuthButton.swift */; };
 		256C93BE28E7CC6F009A0F2B /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 256C93BD28E7CC6F009A0F2B /* HomeController.swift */; };
 		256C940128E8FB3C009A0F2B /* LocationInputActivationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 256C940028E8FB3C009A0F2B /* LocationInputActivationView.swift */; };
+		256C940328E904F3009A0F2B /* LocationInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 256C940228E904F3009A0F2B /* LocationInputView.swift */; };
 		25E7D4F428E1491000F7CEDB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E7D4F328E1491000F7CEDB /* AppDelegate.swift */; };
 		25E7D4F628E1491000F7CEDB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E7D4F528E1491000F7CEDB /* SceneDelegate.swift */; };
 		25E7D4FB28E1491000F7CEDB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25E7D4F928E1491000F7CEDB /* Main.storyboard */; };
@@ -28,6 +29,7 @@
 		256C930428E52D81009A0F2B /* AuthButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthButton.swift; sourceTree = "<group>"; };
 		256C93BD28E7CC6F009A0F2B /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
 		256C940028E8FB3C009A0F2B /* LocationInputActivationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationInputActivationView.swift; sourceTree = "<group>"; };
+		256C940228E904F3009A0F2B /* LocationInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationInputView.swift; sourceTree = "<group>"; };
 		25E7D4F028E1491000F7CEDB /* UberUikit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UberUikit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25E7D4F328E1491000F7CEDB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		25E7D4F528E1491000F7CEDB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 			children = (
 				256C930428E52D81009A0F2B /* AuthButton.swift */,
 				256C940028E8FB3C009A0F2B /* LocationInputActivationView.swift */,
+				256C940228E904F3009A0F2B /* LocationInputView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -208,6 +211,7 @@
 				256C92DD28E407E9009A0F2B /* SignUpController.swift in Sources */,
 				256C930528E52D81009A0F2B /* AuthButton.swift in Sources */,
 				256C93BE28E7CC6F009A0F2B /* HomeController.swift in Sources */,
+				256C940328E904F3009A0F2B /* LocationInputView.swift in Sources */,
 				25E7D4F428E1491000F7CEDB /* AppDelegate.swift in Sources */,
 				25E7D50D28E149D400F7CEDB /* LoginController.swift in Sources */,
 				25E7D4F628E1491000F7CEDB /* SceneDelegate.swift in Sources */,
