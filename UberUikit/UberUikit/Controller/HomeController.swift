@@ -9,6 +9,10 @@ import UIKit
 import FirebaseAuth
 import Firebase
 import MapKit
+
+//Creating identifiers on top like apple does
+
+private let reuseIdentifier = "LocationCell"
 class HomeController: UIViewController{
     
     //MARK: - Properties
@@ -16,6 +20,8 @@ class HomeController: UIViewController{
     private let locationManager = CLLocationManager()
     private let locationSearchView = LocationInputActivationView()
     private let locationInputView = LocationInputView()
+    private let tableView = UITableView()
+    private final let locationInputViewHeight: CGFloat = 200 //final makes sure it cant be changed anywhere
     //MARK: - Lifecycle
     
     override func viewDidLoad() {
@@ -65,6 +71,8 @@ class HomeController: UIViewController{
         UIView.animate(withDuration: 2) {
             self.locationSearchView.alpha = 1
         }
+        
+        configureTableView()
     }
     
     func configureMapView(){
@@ -77,16 +85,31 @@ class HomeController: UIViewController{
     
     func configureLocationInputView(){
         view.addSubview(locationInputView)
-        locationInputView.anchor(top: view.topAnchor, left: view.leftAnchor, right: view.rightAnchor, height: 200)
+        locationInputView.anchor(top: view.topAnchor, left: view.leftAnchor, right: view.rightAnchor, height: locationInputViewHeight)
         //making it hidden
         locationInputView.alpha = 0
         locationInputView.delegate = self
         UIView.animate(withDuration: 0.5) {
             self.locationInputView.alpha = 1
         } completion: { _ in
-            print("Debug: Present table view")
+            //presenting the table view
+            UIView.animate(withDuration: 0.3) {
+                self.tableView.frame.origin.y = self.locationInputViewHeight
+            }
+            
         }
 
+    }
+    
+    func configureTableView(){
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(LocationCell.self, forCellReuseIdentifier: reuseIdentifier)
+        tableView.rowHeight = 60
+        let height = view.frame.height - locationInputViewHeight //frame will be he height of the frame minus the height of the location input view
+        tableView.frame = CGRectMake(0, view.frame.height, view.frame.width, height) //x,y will be the origin, our starting point will be the bottom of the screen since we made our y the height of the view's frame and we will slide it up
+        view.addSubview(tableView)
+        
     }
 }
 
@@ -137,10 +160,14 @@ extension HomeController: LocationInputActivationViewDelegate{
 //MARK: - LocationInputViewDelegate
 extension HomeController: LocationInputViewDelegate{
     func dismissLocationInputView() {
+        
         //chaining animations
         UIView.animate(withDuration: 0.3) {
             self.locationInputView.alpha = 0
+            self.tableView.frame.origin.y = self.view.frame.height
         } completion: { _ in
+            //making sure we arent constantly adding locationInputView in our Configure Location input view method
+            self.locationInputView.removeFromSuperview()
             UIView.animate(withDuration: 0.3) {
                 self.locationSearchView.alpha = 1
             }
@@ -149,3 +176,26 @@ extension HomeController: LocationInputViewDelegate{
     }
     
 }
+
+//MARK: - UITableViewDelegate/DataSource
+extension HomeController: UITableViewDataSource, UITableViewDelegate{
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Recent Locations"
+    }
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! LocationCell
+        return cell
+    }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        //static return for now 
+        return section == 0 ? 2: 5
+    
+    }
+    
+    
+}
+
+

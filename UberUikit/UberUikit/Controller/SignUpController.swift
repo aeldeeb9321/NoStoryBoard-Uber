@@ -8,7 +8,7 @@
 import UIKit
 import FirebaseAuth
 import Firebase
-
+import FirebaseDatabase
 class SignUpController: UIViewController{
     //MARK: - Properties
     
@@ -130,9 +130,9 @@ class SignUpController: UIViewController{
             let values = ["email": email, "fullname": fullname, "accountType": accountTypeIndex]
             
             //Creating the users node, then add the dictionary of data about our user to the database
-//            Database.database().reference().child("users").child(uid).updateChildValues(values) { error, ref in
-//                print("Successfully registered user and saved data...")
-//            }
+            Database.database().reference().child("users").child(uid).updateChildValues(values) { error, ref in
+                print("Successfully registered user and saved data...")
+            }
             guard let controller = UIApplication.shared.keyWindow?.rootViewController as? HomeController else{return }
             controller.configureUI()
             self.dismiss(animated: true)
