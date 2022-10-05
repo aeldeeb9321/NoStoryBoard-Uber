@@ -120,7 +120,7 @@ extension UITextField{
 }
 
 extension UILabel{
-    func uiLabel(withText: String, font: UIFont?, textColor: UIColor) -> UILabel{
+    func uiLabel(withText: String? = nil, font: UIFont?, textColor: UIColor) -> UILabel{
         let label = UILabel()
         label.text = withText
         label.font = font
